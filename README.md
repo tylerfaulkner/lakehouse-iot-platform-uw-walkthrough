@@ -34,6 +34,15 @@ The installer creates everything in the `workspace` catalog, schema `dbdemos_iot
 It also updates the links inside the notebooks so they open *your* pipeline, dashboards, job and app.
 Git will then show those notebooks as modified. That's expected, and you don't need to commit them.
 
+### Getting updates later
+If the repo is updated after you installed, open the Git dialog (the branch name next to the folder
+title) and click **Pull**. If Pull reports a conflict, the conflicting files are the installer's link
+updates:
+
+1. Click the **⋮** menu next to *N changed files*, choose **Discard all changes**, and confirm.
+2. Click **Pull**.
+3. Re-run `00-INSTALL-demo-resources` to restore your links and pick up any other updates.
+
 ### 4. Start the walkthrough
 Open **`00-IOT-wind-turbine-introduction-DI-platform`** and follow along.
 
