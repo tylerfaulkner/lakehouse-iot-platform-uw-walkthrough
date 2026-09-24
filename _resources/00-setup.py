@@ -50,7 +50,16 @@ from datetime import datetime
 
 folder = volume_folder
 
-if reset_all_data or DBDemos.is_any_folder_empty([folder+"/historical_turbine_status", folder+"/parts", folder+"/turbine", folder+"/incoming_data"]):
+def model_exists():
+  #The data loader also registers the placeholder model used by the SDP pipeline
+  from mlflow import MlflowClient
+  try:
+    MlflowClient(registry_uri="databricks-uc").get_model_version_by_alias(f"{catalog}.{db}.{model_name}", "prod")
+    return True
+  except Exception:
+    return False
+
+if reset_all_data or DBDemos.is_any_folder_empty([folder+"/historical_turbine_status", folder+"/parts", folder+"/turbine", folder+"/incoming_data"]) or not model_exists():
   #data generation on another notebook to avoid installing libraries (takes a few seconds to setup pip env)
   print(f"Generating data under {folder} , please wait a few sec...")
   dbutils.notebook.run(f"{repo_root}/_resources/01-load-data", 600, {"reset_all_data": dbutils.widgets.get("reset_all_data"), "catalog": catalog, "db": db})
