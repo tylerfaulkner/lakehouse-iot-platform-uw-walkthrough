@@ -49,6 +49,8 @@ sources, the exploration notebooks and the app) and recreates the resources in t
 - Some steps take a while the first time: the installer takes about 15–30 minutes, and `05.1` takes about
   25 minutes while it provisions the Lakebase database and the Vector Search endpoint and index.
 - The labs' `TODO` cells are meant to fail until you fill them in.
+- The first time you open the Databricks App, you'll see a **Permission Requested** screen. Click
+  **Authorize**; it only asks once.
 - The Databricks App keeps compute running while it's up. Stop it from **Compute → Apps** when you're done.
 
 ## Repo layout

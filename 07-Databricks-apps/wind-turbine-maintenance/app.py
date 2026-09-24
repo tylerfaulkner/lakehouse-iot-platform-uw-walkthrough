@@ -53,7 +53,7 @@ def load_data() -> pd.DataFrame:
     """
     df = (
         spark.table(FULL_TABLE)
-        .orderBy(F.col("severity_score").desc())   # highest severity first
+        .orderBy(F.col("severity_score").desc(), F.col("turbine_id"))   # highest severity first, stable order for ties
     )
     return df.toPandas()
 
@@ -255,6 +255,7 @@ if not turbine_options:
 else:
     selected_id = st.selectbox(
         "Select turbine to update",
+        key="selected_turbine",   # keep the same turbine selected across reruns
         options=turbine_options,
         help="The list reflects your current filter selection above.",
     )
@@ -278,6 +279,7 @@ else:
         # Status dropdown — pre-set to the turbine's current status
         new_status = st.selectbox(
             "New Status",
+            key=f"status_{selected_id}",   # one widget per turbine so edits don't carry over to another turbine
             options=STATUS_OPTIONS,
             index=STATUS_OPTIONS.index(current_row["status"]),
         )
@@ -286,6 +288,7 @@ else:
         existing_notes = current_row["technician_notes"] if pd.notna(current_row["technician_notes"]) else ""
         new_notes = st.text_area(
             "Technician Notes",
+            key=f"notes_{selected_id}",
             value=existing_notes,
             height=120,
             placeholder="Describe the issue, parts needed, or resolution steps...",

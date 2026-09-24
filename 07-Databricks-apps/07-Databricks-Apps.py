@@ -35,6 +35,8 @@
 # MAGIC
 # MAGIC 👉 **<a dbdemos-app-id="wind-turbine-maintenance" href="/compute/apps" target="_blank">Open the Turbine Maintenance Queue App</a>** *(the link is set by the `00-INSTALL-demo-resources` notebook; otherwise find the app under **Compute → Apps**)*
 # MAGIC
+# MAGIC > The first time you open the app, Databricks shows a **Permission Requested** screen asking whether the app may act on your behalf. Click **Authorize**. It only asks once. The first load can then take a minute or two while the app starts its serverless connection.
+# MAGIC
 
 # COMMAND ----------
 

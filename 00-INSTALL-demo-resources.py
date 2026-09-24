@@ -191,7 +191,8 @@ SELECT turbine_id,
        CAST(NULL AS STRING)                                AS technician_notes,
        current_timestamp()                                 AS last_updated
   FROM `{catalog}`.`{db}`.turbine_current_status
- WHERE prediction != 'ok'""")
+ WHERE prediction != 'ok'
+QUALIFY row_number() OVER (PARTITION BY turbine_id ORDER BY hourly_timestamp DESC) = 1  -- one row per turbine: its latest reading""")
 display(spark.table(f"`{catalog}`.`{db}`.maintenance_queue").limit(5))
 
 # COMMAND ----------
