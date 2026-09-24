@@ -84,7 +84,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install --quiet databricks-sdk==0.59.0 mlflow==3.1.1 databricks-feature-engineering==0.12.1 plotly
+# MAGIC %pip install --quiet databricks-sdk==0.59.0 mlflow==3.1.1 databricks-feature-engineering==0.12.1 plotly seaborn scikit-learn
 # MAGIC dbutils.library.restartPython()
 
 # COMMAND ----------
