@@ -221,34 +221,47 @@ except Exception as e:
     else:
         raise e
 
+#A new instance takes a few minutes to start: wait until it's available before syncing tables to it
+import time
+while str(w.database.get_database_instance("iot-database-instance").state).split(".")[-1] != "AVAILABLE":
+    print("Waiting for the database instance to be available...")
+    time.sleep(20)
+instance = w.database.get_database_instance("iot-database-instance")
+
 print(f"Created database instance: {instance.name}")
 print(f"Connection endpoint: {instance.read_write_dns}")
 
 # COMMAND ----------
 
 # Create a synced table in a standard UC catalog
-synced_table = w.database.create_synced_database_table(
-    SyncedDatabaseTable(
-        name=f"{catalog}.{db}.turbine_current_features_synced",  # Full three-part name
-        database_instance_name="iot-database-instance",  # Required for standard catalogs
-        logical_database_name="iot_db",  # Required for standard catalogs
-        spec=SyncedTableSpec(
-            source_table_full_name=f"{catalog}.{db}.turbine_current_features",
-            primary_key_columns=["turbine_id"],
-            scheduling_policy=SyncedTableSchedulingPolicy.SNAPSHOT,
-            timeseries_key="hourly_timestamp",
-            create_database_objects_if_missing=True,  # Create database/schema if needed
-            new_pipeline_spec=NewPipelineSpec(
-                storage_catalog=catalog,
-                storage_schema=db
-            )
-        ),
+synced_table_name = f"{catalog}.{db}.turbine_current_features_synced"
+try:
+    synced_table = w.database.get_synced_database_table(name=synced_table_name)
+    print(f"Synced table already exists: {synced_table.name}")
+except Exception as e:
+    if "not found" not in str(e).lower() and "does not exist" not in str(e).lower():
+        raise e
+    synced_table = w.database.create_synced_database_table(
+        SyncedDatabaseTable(
+            name=synced_table_name,  # Full three-part name
+            database_instance_name="iot-database-instance",  # Required for standard catalogs
+            logical_database_name="iot_db",  # Required for standard catalogs
+            spec=SyncedTableSpec(
+                source_table_full_name=f"{catalog}.{db}.turbine_current_features",
+                primary_key_columns=["turbine_id"],
+                scheduling_policy=SyncedTableSchedulingPolicy.SNAPSHOT,
+                timeseries_key="hourly_timestamp",
+                create_database_objects_if_missing=True,  # Create database/schema if needed
+                new_pipeline_spec=NewPipelineSpec(
+                    storage_catalog=catalog,
+                    storage_schema=db
+                )
+            ),
+        )
     )
-)
-print(f"Created synced table: {synced_table.name}")
+    print(f"Created synced table: {synced_table.name}")
 
 # Check the status of a synced table
-synced_table_name = f"{catalog}.{db}.turbine_current_features_synced"
 status = w.database.get_synced_database_table(name=synced_table_name)
 print(f"Synced table status: {status.data_synchronization_status.detailed_state}")
 print(f"Status message: {status.data_synchronization_status.message}")
