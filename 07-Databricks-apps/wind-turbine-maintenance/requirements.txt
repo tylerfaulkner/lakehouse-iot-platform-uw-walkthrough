@@ -1,0 +1,11 @@
+# requirements.txt
+#
+# Databricks Apps installs these into the app's runtime environment.
+# Pin minor versions so the tutorial stays reproducible, but allow patch updates.
+#
+# Note: The Databricks runtime itself (PySpark, Unity Catalog access, etc.)
+# is provided by the platform — you do NOT need to list pyspark here.
+
+streamlit>=1.35,<2.0          # UI framework
+databricks-connect>=15.1,<16  # Spark session backed by Databricks cluster
+pandas>=2.0,<3.0              # DataFrame manipulation on the client side

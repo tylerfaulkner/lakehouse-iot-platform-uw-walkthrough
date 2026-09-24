@@ -1,0 +1,21 @@
+# app.yaml — Databricks Apps deployment manifest
+#
+# This file tells Databricks how to run your app.
+# Deploy with: databricks apps deploy <app-name> --source-code-path .
+#
+# Docs: https://docs.databricks.com/en/dev-tools/databricks-apps/index.html
+
+command:
+  - "streamlit"
+  - "run"
+  - "app.py"
+  - "--browser.gatherUsageStats=false"
+
+env:
+ - name: "DATABRICKS_WAREHOUSE_ID"
+   value: "serverless"
+ # Where the maintenance_queue table lives (kept in sync with config by 00-INSTALL-demo-resources)
+ - name: "IOT_CATALOG"
+   value: "workspace"
+ - name: "IOT_SCHEMA"
+   value: "dbdemos_iot_platform"
