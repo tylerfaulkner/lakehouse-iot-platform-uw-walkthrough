@@ -218,7 +218,10 @@ def list_dashboards():
 def install_dashboard(template, display_name):
   with open(f"/Workspace{repo_root}/_resources/dashboards/{template}.dashboard.json") as f:
     serialized = f.read().replace("`main`.`dbdemos_iot_platform`", f"`{catalog}`.`{db}`")
-  in_folder = lambda d: re.sub(r"^/Workspace", "", d.get("parent_path") or d.get("path") or "").startswith(dashboard_folder)
+  #The list API doesn't return paths: fetch each same-named dashboard to check it's the one in our folder
+  def in_folder(d):
+    full = api.do("GET", f"/api/2.0/lakeview/dashboards/{d['dashboard_id']}")
+    return re.sub(r"^/Workspace", "", full.get("parent_path") or full.get("path") or "").startswith(dashboard_folder)
   existing = [d for d in list_dashboards() if d.get("display_name") == display_name and in_folder(d)]
   body = {"display_name": display_name, "serialized_dashboard": serialized, "warehouse_id": warehouse_id}
   if existing:
