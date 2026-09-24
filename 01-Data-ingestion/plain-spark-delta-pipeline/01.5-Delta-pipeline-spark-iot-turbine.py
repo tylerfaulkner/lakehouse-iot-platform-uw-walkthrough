@@ -157,9 +157,9 @@ def ingest_folder(folder, data_format, table):
                     .trigger(availableNow= True) #Remove for real time streaming
                     .table("spark_"+table)) #Table will be created if we haven't specified the schema first
   
-ingest_folder(f'{volume_folder}/historical_turbine_status', 'json', 'spark_historical_turbine_status')
-ingest_folder(f'{volume_folder}/turbine', 'json', 'spark_turbine')
-ingest_folder(f'{volume_folder}/incoming_data', 'parquet', 'spark_sensor_bronze').awaitTermination()
+ingest_folder(f'{volume_folder}/historical_turbine_status', 'json', 'historical_turbine_status').awaitTermination()
+ingest_folder(f'{volume_folder}/turbine', 'json', 'turbine').awaitTermination()
+ingest_folder(f'{volume_folder}/incoming_data', 'parquet', 'sensor_bronze').awaitTermination()
 
 # COMMAND ----------
 

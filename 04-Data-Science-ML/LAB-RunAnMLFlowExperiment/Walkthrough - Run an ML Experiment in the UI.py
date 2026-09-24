@@ -159,7 +159,7 @@ sampled_combos = random.sample(all_combos, min(N_SEARCH_ITER, len(all_combos)))
 
 print(f"🔍 Running {len(sampled_combos)} trials out of {len(all_combos)} possible combinations\n")
 
-dbutils.fs.mkdirs(full_xp_name)
+dbutils.fs.mkdirs(xp_path)
 
 mlflow.set_experiment(full_xp_name)
 
