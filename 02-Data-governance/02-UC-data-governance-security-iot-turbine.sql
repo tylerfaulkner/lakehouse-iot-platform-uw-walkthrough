@@ -180,13 +180,14 @@ SHOW TABLES;
 
 -- DBTITLE 1,Granting access to Analysts & Data Engineers:
 -- Let's grant our ANALYSTS a SELECT permission:
--- Note: make sure you created an analysts and dataengineers group first.
-GRANT SELECT ON TABLE workspace.dbdemos_iot_platform.sensor_bronze TO `analysts`;
-GRANT SELECT ON TABLE workspace.dbdemos_iot_platform.sensor_hourly TO `analysts`;
-GRANT SELECT ON TABLE workspace.dbdemos_iot_platform.historical_turbine_status TO `analysts`;
+-- Note: in a real organization you'd grant to account groups such as `analysts` and `dataengineers`.
+-- Databricks Free Edition has no account groups, so we use the built-in `account users` group instead.
+GRANT SELECT ON TABLE workspace.dbdemos_iot_platform.sensor_bronze TO `account users`;
+GRANT SELECT ON TABLE workspace.dbdemos_iot_platform.sensor_hourly TO `account users`;
+GRANT SELECT ON TABLE workspace.dbdemos_iot_platform.historical_turbine_status TO `account users`;
 
 -- We'll grant an extra MODIFY to our Data Engineer
-GRANT SELECT, MODIFY ON SCHEMA workspace.dbdemos_iot_platform TO `dataengineers`;
+GRANT SELECT, MODIFY ON SCHEMA workspace.dbdemos_iot_platform TO `account users`;
 
 -- COMMAND ----------
 
