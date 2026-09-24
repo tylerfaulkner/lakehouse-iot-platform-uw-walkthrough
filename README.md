@@ -44,9 +44,11 @@ sources, the exploration notebooks and the app) and recreates the resources in t
 
 ## Free Edition notes
 - Everything runs on serverless compute. There's no cluster to create.
-- Some sections use features that Free Edition limits or doesn't include: model serving endpoints
-  (`04.2`), Vector Search and Lakebase (`05.1`), and account groups for the `GRANT` examples (`02`).
-  If a cell fails for that reason, read through it and move on.
+- Every notebook has been tested end to end on a fresh Free Edition workspace, including model serving
+  (`04.2`), Lakebase and Vector Search (`05.1`).
+- Some steps take a while the first time: the installer takes about 15–30 minutes, and `05.1` takes about
+  25 minutes while it provisions the Lakebase database and the Vector Search endpoint and index.
+- The labs' `TODO` cells are meant to fail until you fill them in.
 - The Databricks App keeps compute running while it's up. Stop it from **Compute → Apps** when you're done.
 
 ## Repo layout
