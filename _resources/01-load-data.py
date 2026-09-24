@@ -71,12 +71,24 @@ import cloudpickle
 from unittest import mock
 
 # define a custom model randomly flagging 10% of sensor for the demo init (it'll be replace with proper model on the training part.)
+# The model is saved as code ("models from code") rather than pickled: pickled bytecode only loads on the exact
+# python version it was saved with, and the SDP pipeline may run a different one than this notebook.
+model_code = '''
+import random
+import mlflow
+
 class MaintenanceEmptyModel(mlflow.pyfunc.PythonModel):
-    def predict(self, context, model_input: pd.DataFrame) -> pd.Series:
-        import random
+    def predict(self, context, model_input):
         sensors = ['sensor_F', 'sensor_D', 'sensor_B']
         return model_input['avg_energy'].apply(lambda x: 'ok' if random.random() < 0.9 else random.choice(sensors))
- 
+
+mlflow.models.set_model(MaintenanceEmptyModel())
+'''
+import tempfile, os
+model_code_path = os.path.join(tempfile.mkdtemp(), "maintenance_empty_model.py")
+with open(model_code_path, "w") as f:
+  f.write(model_code)
+
 #Enable Unity Catalog with mlflow registry
 mlflow.set_registry_uri('databricks-uc')
 model_name = "dbdemos_turbine_maintenance"
@@ -90,14 +102,13 @@ except Exception as e:
         # setup the experiment folder
         DBDemos.init_experiment_for_batch("lakehouse-iot-platform", "predictive_maintenance_mock")
         # save the model
-        churn_model = MaintenanceEmptyModel()
         import pandas as pd
 
         signature = ModelSignature.from_dict({'inputs': '[{"name": "hourly_timestamp", "type": "datetime"}, {"name": "avg_energy", "type": "double"}, {"name": "std_sensor_A", "type": "double"}, {"name": "std_sensor_B", "type": "double"}, {"name": "std_sensor_C", "type": "double"}, {"name": "std_sensor_D", "type": "double"}, {"name": "std_sensor_E", "type": "double"}, {"name": "std_sensor_F", "type": "double"}, {"name": "location", "type": "string"}, {"name": "model", "type": "string"}, {"name": "state", "type": "string"}]',
 'outputs': '[{"type": "tensor", "tensor-spec": {"dtype": "object", "shape": [-1]}}]'})
         #Temporary pin python to 3.11.10
         with mlflow.start_run(run_name="mockup_model") as run, mock.patch("mlflow.utils.environment.PYTHON_VERSION", DBDemos.get_python_version_mlflow()):
-            model_info = mlflow.pyfunc.log_model(artifact_path="model", python_model=churn_model, signature=signature, pip_requirements=['mlflow=='+mlflow.__version__, 'pandas=='+pd.__version__, 'numpy=='+np.__version__, 'cloudpickle=='+cloudpickle.__version__])
+            model_info = mlflow.pyfunc.log_model(artifact_path="model", python_model=model_code_path, signature=signature, pip_requirements=['mlflow=='+mlflow.__version__, 'pandas=='+pd.__version__, 'numpy=='+np.__version__, 'cloudpickle=='+cloudpickle.__version__])
 
         #Register & move the model in production
         model_registered = mlflow.register_model(f'runs:/{run.info.run_id}/model', f"{catalog}.{db}.{model_name}")
