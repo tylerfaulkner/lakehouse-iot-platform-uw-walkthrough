@@ -19,9 +19,22 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 3. Select 'Add Existing Assets'
+# MAGIC ### This will create a new folder in your workspace
+# MAGIC By default creating a new pipeline from the UI will assume you want to create the resources from scratch, for this wlakthrough you will be referencing existing code from the repo you cloned.
+# MAGIC ![empty_pipeline.png](./empty_pipeline.png "empty_pipeline.png")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## 3. Click the Gear Icon in the top-left corner
 # MAGIC
-# MAGIC ![image_1773254010639.png](./image_1773254010639.png "image_1773254010639.png")
+# MAGIC ![settings.png](./settings.png "settings.png")[](url)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### 3.a. Select Configure Paths to Point your new pipeline at existing resources
+# MAGIC ![configure_paths.png](./configure_paths.png "configure_paths.png")
 
 # COMMAND ----------
 
@@ -54,7 +67,7 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 7. In the top right select 'Dry Run' to see your pipeline gewt validated and a graph get generated
+# MAGIC ## 7. In the top right select 'Dry Run' to see your pipeline get validated and a graph get generated
 # MAGIC ![image_1773254533154.png](./image_1773254533154.png "image_1773254533154.png")
 
 # COMMAND ----------
